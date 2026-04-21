@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Галерея котоискусства</title>
+  <meta name="description" content="Креативный сайт галереи  искусства с коллекцией классических картин и кото-пародий." />
+  <style>
+    :root {
+      --bg: #111111;
+      --bg-soft: #191919;
+      --panel: #1f1a17;
+      --panel-2: #2a211c;
+      --text: #f5f2ee;
+      --muted: #c9b9ab;
+      --brown: #6d4c41;
+      --orange: #f28c28;
+      --orange-2: #ffb15f;
+      --white: #ffffff;
+      --line: rgba(255,255,255,0.1);
+      --shadow: 0 20px 50px rgba(0,0,0,0.35);
+      --radius: 28px;
+      --radius-sm: 18px;
+      --max: 1200px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(242,140,40,0.08), transparent 30%),
+        radial-gradient(circle at top right, rgba(109,76,65,0.18), transparent 28%),
+        linear-gradient(180deg, #0c0c0c 0%, #14110f 45%, #110f0e 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button, input { font: inherit; }
+
+    .container {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 16px;
+      background: var(--orange);
+      color: #111;
+      padding: 10px 14px;
+      /* border-radius: 999px; */
+      z-index: 1000;
+    }
+    .skip-link:focus { left: 16px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      background: rgba(12, 12, 12, 0.72);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 16px;
+      /* background: linear-gradient(135deg, var(--white), var(--brown)); */
+      display: grid;
+      place-items: center;
+      /* box-shadow: 0 10px 25px rgba(242,140,40,0.25); */
+      flex: 0 0 auto;
+      overflow: hidden;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0;    /* если не нужен скругленный img */
+    }
+
+    .brand-text { min-width: 0; }
+    .brand-text strong {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+    .brand-text span {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      /* padding: 10px 14px; */
+      /* border-radius: 999px; */
+      color: var(--muted);
+      transition: 0.25s ease;
+      /* border: 1px solid transparent; */
+    }
+    nav a:hover, nav a:focus-visible {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.14);
+      /* background: rgba(255,255,255,0.04); */
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      padding: 54px 0 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+      min-height: 74vh;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px;
+      color: var(--orange-2);
+      background: rgba(255,255,255,0.03);
+      margin-bottom: 18px;
+      width: fit-content;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 0 8px rgba(242,140,40,0.14);
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 5.4rem);
+      line-height: 0.95;
+      margin: 0;
+      letter-spacing: -0.05em;
+    }
+
+    .lead {
+      margin: 20px 0 0;
+      max-width: 62ch;
+      font-size: clamp(1rem, 2vw, 1.12rem);
+      line-height: 1.7;
+      color: #e7ddd3;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      padding: 14px 18px;
+      /* border-radius: 999px; */
+      cursor: pointer;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+      box-shadow: var(--shadow);
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--orange), #ff9b3d);
+      color: #111;
+      font-weight: 700;
+    }
+    .btn.secondary {
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .hero-gallery {
+      position: relative;
+      min-height: 620px;
+      display: grid;
+      place-items: center;
+    }
+
+    .floating-card {
+      position: absolute;
+      width: min(100%, 360px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.12);
+      /* border-radius: 28px; */
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transform: translateY(24px) scale(0.97);
+      opacity: 0;
+      animation: rise 0.9s ease forwards;
+      backdrop-filter: blur(8px);
+    }
+    .floating-card:nth-child(1) { top: 6%; left: 5%; animation-delay: 0.15s; }
+    .floating-card:nth-child(2) { top: 26%; right: 6%; animation-delay: 0.35s; }
+    .floating-card:nth-child(3) { bottom: 4%; left: 16%; animation-delay: 0.55s; }
+
+    .floating-card img {
+      height: 220px;
+      width: 100%;
+      object-fit: cover;
+      filter: saturate(1.05) contrast(1.03);
+    }
+
+    .hero-gallery .floating-card:nth-child(1) img {
+      object-position: calc(50% + 0px) center;
+    }
+
+    .hero-gallery .floating-card:nth-child(2) img {
+      object-position: center calc(50% + 10px);
+    }
+
+    .hero-gallery .floating-card:nth-child(3) img {
+      object-position: center calc(50% + 0px);
+    }
+
+    .card-body {
+      padding: 16px 16px 18px;
+      background: linear-gradient(180deg, rgba(17,17,17,0.15), rgba(17,17,17,0.6));
+    }
+
+    .card-title {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 1rem;
+      margin: 0 0 6px;
+    }
+
+    .card-meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .scroll-hint {
+      margin-top: 24px;
+      color: var(--muted);
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+    }
+    .scroll-hint span {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      /* border-radius: 50%; */
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--orange);
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    main section {
+      padding: 84px 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .section-title h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      margin: 0;
+      letter-spacing: -0.04em;
+    }
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 60ch;
+      line-height: 1.6;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.09);
+      /* border-radius: var(--radius); */
+      box-shadow: var(--shadow);
+    }
+
+    .mission,
+    .how,
+    .significance,
+    .symbol,
+    .exhibitions,
+    .collections,
+    .visitor {
+      position: relative;
+    }
+
+    .mission-grid,
+    .symbol-grid,
+    .visitor-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .text-card {
+      padding: 26px;
+      line-height: 1.75;
+      color: #e8dfd6;
+    }
+    .text-card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+    .text-card p { margin: 0; color: #e5d8cd; }
+
+    .quote-card {
+      padding: 26px;
+      background: linear-gradient(135deg, rgba(242,140,40,0.13), rgba(109,76,65,0.10));
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .quote-card strong {
+      display: block;
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .step {
+      padding: 22px;
+      min-height: 220px;
+    }
+    .step .num {
+      display: inline-grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: rgba(242,140,40,0.15);
+      color: var(--orange-2);
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+    .step h3 { margin: 0 0 10px; }
+    .step p { margin: 0; color: var(--muted); line-height: 1.7; }
+
+    .symbol-card {
+      padding: 26px;
+    }
+    .symbol-card ul {
+      padding-left: 18px;
+      margin: 16px 0 0;
+      color: #e8dfd6;
+      line-height: 1.8;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 18px;
+    }
+
+    .art-card {
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .art-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(242,140,40,0.45);
+      box-shadow: 0 22px 50px rgba(0,0,0,0.42);
+    }
+
+    .art-card {
+      position: relative;
+      min-height: 520px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.10);
+      background-size: cover;
+      background-position: center;
+      transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease;
+      display: flex;
+      align-items: stretch;
+    }
+
+    .art-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.22) 35%, rgba(0,0,0,0.72) 100%);
+      z-index: 0;
+    }
+
+    .art-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 45%);
+      z-index: 1;
+      opacity: 0.7;
+    }
+
+    .art-card-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 22px;
+      width: 100%;
+      min-height: 100%;
+    }
+
+    .art-card-top {
+      position: absolute;
+      top: 22px;
+      left: 22px;
+      right: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .art-card-label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    }
+
+    .art-card-line {
+      width: 34px;
+      height: 2px;
+      background: var(--orange-2);
+      border-radius: 999px;
+      box-shadow: 0 0 10px rgba(255,177,95,0.35);
+    }
+
+    .art-card h3 {
+      margin: 0 0 10px;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.05;
+      color: #fff;
+      text-align: center;
+      letter-spacing: -0.04em;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.45);
+    }
+
+    .art-card-subtitle {
+      margin: 0 0 12px;
+      color: rgba(255,255,255,0.92);
+      text-align: center;
+      font-size: 1rem;
+      line-height: 1.5;
+      font-weight: 600; /* ВОТ ЭТО ДОБАВЛЕНО */
+    }
+
+    .art-card-desc {
+      margin: 0 auto 18px;
+      max-width: 34ch;
+      color: rgba(255,255,255,0.84);
+      text-align: center;
+      line-height: 1.6;
+      font-size: 0.96rem;
+    }
+
+    .art-card-btn {
+      align-self: center;
+      padding: 8px 16px; /* было больше */
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.02);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform .22s ease, background .22s ease, border-color .22s ease;
+    }
+
+    .art-card-btn:hover,
+    .art-card-btn:focus-visible {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,1);
+    }
+
+    .art-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(242,140,40,0.42);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .search-bar input {
+      flex: 1 1 320px;
+      min-width: 240px;
+      border: 1px solid rgba(255,255,255,0.11);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      padding: 14px 18px;
+      /* border-radius: 999px; */
+      outline: none;
+    }
+    .search-bar input:focus {
+      border-color: rgba(242,140,40,0.55);
+      box-shadow: 0 0 0 4px rgba(242,140,40,0.12);
+    }
+
+    .gallery-note {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .visitor-grid .panel { min-height: 100%; }
+    .checklist {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .check {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      color: #eadfd4;
+      line-height: 1.6;
+    }
+    .check span {
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      /* border-radius: 50%; */
+      display: grid;
+      place-items: center;
+      margin-top: 2px;
+      background: rgba(242,140,40,0.16);
+      color: var(--orange-2);
+      font-size: 0.8rem;
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+      color: #efe7de;
+    }
+    .contact-list a {
+      color: var(--orange-2);
+      font-weight: 700;
+    }
+
+    footer {
+      background: linear-gradient(135deg, #ff951f, #e37200);
+      color: #16110d;
+      padding: 26px 0;
+      margin-top: 72px;
+    }
+    .footer-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      align-items: start;
+    }
+    .footer-grid h3, .footer-grid p { margin: 0; }
+    .footer-grid p { line-height: 1.6; }
+    .footer-grid a { color: #16110d; font-weight: 800; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.74);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 200;
+    }
+    .modal.open { display: flex; }
+    .modal-card {
+      width: min(100%, 980px);
+      max-height: 92vh;
+      overflow: auto;
+      /* border-radius: 30px; */
+      background: linear-gradient(180deg, #201712, #120f0e);
+      border: 1px solid rgba(255,255,255,0.11);
+      box-shadow: var(--shadow);
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 0;
+      background: rgba(18,15,14,0.92);
+      backdrop-filter: blur(10px);
+      z-index: 1;
+    }
+    .modal-head strong { font-size: 1rem; }
+    .close-btn {
+      width: 42px;
+      height: 42px;
+      /* border-radius: 50%; */
+      border: 0;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      cursor: pointer;
+    }
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .modal-body img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      min-height: 320px;
+    }
+    .modal-content {
+      padding: 26px;
+      line-height: 1.75;
+    }
+    .modal-content h2 { margin: 0 0 8px; font-size: clamp(1.7rem, 3vw, 2.5rem); }
+    .modal-content .meta { color: var(--orange-2); margin-bottom: 16px; }
+    .modal-content p { color: #e7ddd3; margin: 0 0 12px; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .pill {
+      display: inline-flex;
+      padding: 8px 12px;
+      /* border-radius: 999px; */
+      background: rgba(242,140,40,0.12);
+      color: #ffbf7b;
+      border: 1px solid rgba(242,140,40,0.18);
+      font-size: 0.92rem;
+    }
+
+    .hidden { display: none !important; }
+
+    @keyframes rise {
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    @media (max-width: 1050px) {
+      .hero-grid,
+      .mission-grid,
+      .symbol-grid,
+      .visitor-grid,
+      .footer-grid,
+      .modal-body { grid-template-columns: 1fr; }
+      .hero-gallery { min-height: 540px; }
+      .floating-card:nth-child(1) { left: 0; }
+      .floating-card:nth-child(2) { right: 0; }
+      .floating-card:nth-child(3) { left: 50%; transform: translateX(-50%); }
+      .steps, .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      nav { justify-content: flex-start; }
+      main section { padding: 66px 0; }
+      .hero { padding-top: 30px; }
+      .hero-gallery { min-height: 460px; }
+      .floating-card { width: min(100%, 320px); }
+      .floating-card img { height: 190px; }
+      .steps, .gallery-grid { grid-template-columns: 1fr; }
+      .step { min-height: auto; }
+      .art-card img { height: 210px; }
+      .modal-content { padding: 20px; }
+      .art-card {
+        min-height: 460px;
+      }
+      .art-card-inner {
+        padding: 18px;
+      }
+
+      .art-card-top {
+        top: 18px;
+        left: 18px;
+        right: 18px;
+      }
+
+      .art-card h3 {
+        font-size: 1.8rem;
+      }
+
+      .art-card-desc {
+        max-width: 30ch;
+        font-size: 0.92rem;
+      }
+    }
+
+    .nav-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 42px;
+      cursor: text;
+    }
+
+        /* Текст "Поиск" как ссылка */
+    .nav-search-label {
+      position: absolute;
+      left: 0;
+      color: var(--muted);
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events: none;
+    }
+
+    .nav-search input {
+      width: 120px;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      padding: 10px 0 6px;
+      border-bottom: 1px solid transparent;
+      transition: width .25s ease, border-color .25s ease;
+    }
+
+    .nav-search input::placeholder {
+      color: var(--muted);
+      opacity: 0.9;
+    }
+
+    .nav-search input:focus {
+      border-bottom-color: rgba(242,140,40,0.9);
+    }
+
+    .nav-search-line {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 2px;
+      width: 0;
+      background: linear-gradient(90deg, var(--orange), var(--orange-2));
+      transition: width .3s ease;
+    }
+
+    .nav-search:focus-within .nav-search-line {
+      width: 100%;
+    }
+
+    .nav-search:focus-within input {
+      width: 220px;
+      border-bottom: 1px solid rgba(242,140,40,0.7);
+    }
+
+    .nav-search-results {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      right: 0;
+      z-index: 150;
+      display: none;
+      background: rgba(18, 15, 14, 0.98);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-search-results.open {
+      display: block;
+      animation: searchDrop .18s ease-out;
+    }
+
+    .nav-search-result {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px 14px;
+      background: transparent;
+      color: var(--text);
+      border: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+    }
+
+    .nav-search-result:hover,
+    .nav-search-result:focus-visible {
+      background: rgba(242,140,40,0.12);
+    }
+
+    .nav-search:focus-within .nav-search-label {
+      opacity: 0.15;
+      transform: translateY(-2px);
+    }
+
+    .nav-search-result strong {
+      display: block;
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+    }
+
+    .nav-search-result span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.35;
+    }
+
+    .nav-search-empty {
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @keyframes searchDrop {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 720px) {
+      .nav-search {
+        width: 100%;
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <img src="Clipped_image_20260328_161926.png" alt="Логотип">
+        </div>
+        <div class="brand-text">
+          <strong>Галерея котоискусства</strong>
+          <span>Классика, пародия и коты</span>
+        </div>
+      </div>
+
+    <nav aria-label="Главная навигация">
+      <a href="#main">Главное</a>
+      <a href="#gallery">Галерея</a>
+
+    <div class="nav-search" id="headerSearchWrap">
+      <span class="nav-search-label">Поиск</span>
+      <input
+        id="headerSearchInput"
+        type="search"
+        aria-label="Поиск по галерее"
+        autocomplete="off"
+      />
+      <span class="nav-search-line"></span>
+      <div class="nav-search-results" id="headerSearchResults"></div>
+    </div>
+    </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <div class="eyebrow">Искусство, которое улыбается</div>
+          <h1>Классика получает хвост, усы и характер.</h1>
+          <p class="lead">Это арт-пространство, где шедевры искусства переосмыслены через юмор, цитату и пародию. Коты здесь не просто милый прием — они становятся мостом между высокой культурой и живым, понятным зрителю опытом.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#gallery">Открыть галерею</a>
+            <a class="btn secondary" href="#mission">Узнать миссию галереи</a>
+          </div>
+          <div class="scroll-hint"><span>↓</span> Листайте вниз: там много интересного!</div>
+        </div>
+
+        <div class="hero-gallery" aria-label="Подборка работ галереи">
+          <article class="floating-card">
+            <img src="14.jpg" />
+          </article>
+          <article class="floating-card">
+            <img src="4.jpg" alt="кот на подоконнике" />
+          </article>
+          <article class="floating-card">
+            <img src="13.jpg" alt="Рыжий кот крупным планом" />
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission" class="mission">
+      <div class="container">
+        <div class="section-title reveal">
+          <h2>Наша миссия</h2>
+        </div>
+        <div class="mission-grid">
+          <div class="panel text-card reveal">
+            <h3>Мы сближаем зрителя и искусство</h3>
+            <p>Галерея не требует от посетителя специальной подготовки. Она приглашает смотреть, улыбаться, сравнивать и замечать детали. Через знакомый образ кота зритель легче входит в мир живописи, композиции и художественных цитат.</p>
+          </div>
+          <div class="panel quote-card reveal">
+            <strong>«Юмор здесь не разрушает искусство, а открывает к нему новый вход»</strong>
+            <p>Именно поэтому наша галерея строится как пространство диалога: между прошлым и настоящим, оригиналом и пародией, серьезным и игривым.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="significance">
+      <div class="container">
+        <div class="section-title reveal">
+          <h2>Значимость галереи</h2>
+        </div>
+        <div class="panel text-card reveal">
+          <p>Ее ценность в том, что она разрушает дистанцию между «высоким искусством» и повседневной культурой. Пародия здесь работает как инструмент образования: через иронию зритель запоминает сюжет, замечает структуру картины и лучше понимает, как создаются художественные смыслы. Особенно сильный эффект наше арт-пространство дает для тех, кто обычно чувствует себя неуверенно в классической галерее — здесь вход мягче, а интерес возникает естественно.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="symbol" id="symbol">
+      <div class="container">
+        <div class="section-title reveal">
+          <h2>Коты как универсальный символ</h2>
+        </div>
+        <div class="symbol-grid">
+          <div class="panel symbol-card reveal">
+            <h3>Почему именно коты</h3>
+            <p>Коты легко становятся универсальным образом, потому что они объединяют противоположности: грацию и нелепость, независимость и домашний уют, величие и смешную уязвимость. Именно поэтому они так органично входят в пародийную живопись.</p>
+          </div>
+          <div class="panel symbol-card reveal">
+            <h3>Что они дают галерее</h3>
+            <ul>
+              <li>моментальное узнавание;</li>
+              <li>эмоциональную теплоту;</li>
+              <li>игру с символами и стереотипами;</li>
+              <li>мост между элитарным и массовым восприятием.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="exhibitions">
+      <div class="container">
+        <div class="section-title reveal">
+          <h2>Экспозиции галереи</h2>
+        </div>
+        <div class="steps">
+          <article class="panel step reveal">
+            <div class="num">A</div>
+            <h3>Классика с котом</h3>
+            <p>Известные полотна, где кот вписан так, будто он был там всегда: в композиции, цвете и настроении.</p>
+          </article>
+          <article class="panel step reveal">
+            <div class="num">B</div>
+            <h3>Пародийные ремиксы</h3>
+            <p>Работы, которые играют с легендарными картинами, меняют детали и создают новую, ироничную версию сюжета.</p>
+          </article>
+          <article class="panel step reveal">
+            <div class="num">C</div>
+            <h3>Кото-портреты</h3>
+            <p>Отдельные экспозиции, где кот становится главным героем, а зритель считывает его характер как у полноценного персонажа искусства.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="collections">
+      <div class="container">
+        <div class="section-title reveal">
+          <h2>Коллекция и галерея</h2>
+        </div>
+
+        <div class="search-bar reveal" id="search">
+          <input id="searchInput" type="search" placeholder="Поиск по названию, автору или экспозиции..." aria-label="Поиск по коллекции" />
+        </div>
+        <div class="gallery-grid" id="galleryGrid"></div>
+      </div>
+    </section>
+
+    <section class="visitor">
+      <div class="container">
+        <div class="section-title reveal">
+          <h2>Посетителям</h2>
+        <div class="visitor-grid">
+          <div class="panel text-card reveal">
+            <h3>Что предоставляет галерея</h3>
+            <div class="checklist">
+              <div class="check"><span>✓</span>Аудиогид и короткие пояснения к каждой работе.</div>
+              <div class="check"><span>✓</span>Интерактивную галерею с быстрым открытием подробностей.</div>
+              <div class="check"><span>✓</span>Материалы, которые помогают понять, как устроена пародия и цитата в искусстве.</div>
+            </div>
+          </div>
+          <div class="panel text-card reveal">
+            <h3>Для кого это место</h3>
+            <p>Для тех, кто любит искусство, для тех, кто любит котов, и для тех, кто только начинает интересоваться культурой. Здесь легко задержаться над одной работой дольше, чем планировал, потому что у каждой картины есть и юмор, и история, и свой характер.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <h3>Посетите нашу галерею бесплатно</h3>
+        <p>Мы открыты для всех: приходите за живым искусством, иронией и котами, которые умеют менять взгляд на классическую живопись.</p>
+      </div>
+      <div>
+        <p><strong>Адрес:</strong> ул. Художественная, 21, арт-квартал</p>
+        <p><strong>Время:</strong> ежедневно 10:00–20:00</p>
+      </div>
+      <div>
+        <p><strong>Телефон:</strong> <a href="tel:+375291770782">+375 (29) 177-07-82</a></p>
+        <p><strong>Телефон:</strong> <a href="tel:+375293494275">+375 (29) 349-42-75</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="artModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <strong id="modalTitle">Картина</strong>
+        <button class="close-btn" id="closeModal" aria-label="Закрыть окно">✕</button>
+      </div>
+      <div class="modal-body">
+        <img id="modalImage" src="" alt="" />
+        <div class="modal-content">
+          <h2 id="modalName"></h2>
+          <div class="meta" id="modalMeta"></div>
+          <p id="modalDescription"></p>
+          <p id="modalStory"></p>
+          <div class="pill-row" id="modalPills"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const artworks = [
+      {
+        id: 'card1',
+        title: 'Девушка с жемчужной сережкой',
+        artist: 'Ян Вермеер',
+        exposition: '',
+        image: 'card1.jpg',
+        position: '50% 50%',
+        description: 'Самое знаменитое полотно голландского мастера Яна Вермеера, написанное около 1665 года. Её часто называют «Северной Моной Лизой». Это не портрет, а «трони»:  в XVII веке в Голландии жанр «трони» (tronie) означал изображение головы персонажа в экзотическом наряде. Художник не стремился передать личность конкретной девушки, а фокусировался на эмоции, игре света и необычном образе.',
+        story: 'Девушка изображена вполоборота, её губы слегка приоткрыты, а взгляд направлен прямо на зрителя. Это создает эффект мимолетного мгновения, будто она только что обернулась на чей-то зов. Огромная жемчужина, давшая название картине, на самом деле написана всего несколькими мазками белил. Исследователи полагают, что в реальности это мог быть венецианский муранский лак или серебро, так как натуральный жемчуг такого размера был бы баснословно дорогим и тяжёлым.',
+        pills: ['классика', 'атмосфера', 'ночной сюжет', 'рыжик']
+      },
+      {
+        id: 'card2',
+        title: 'Бонапарт на перевале Сен-Бернар',
+        artist: 'Жак-Луи Давид',
+        exposition: '',
+        image: '2.jpg',
+        position: '50% 50%',
+        description: 'Идеализированный шедевр героического классицизма, созданный Жаком-Луи Давидом в 1801–1805 годах. Это один из самых тиражируемых образов Наполеона в истории. Давид написал пять версий этой картины. Первая была заказана испанским королем Карлом IV, остальные — самим Наполеоном для различных резиденций. Они различаются цветом плаща Бонапарта (от ярко-красного до золотисто-оранжевого) и мастью коня. ',
+        story: 'Картина увековечила переход Наполеона через Альпы в 1800 году. В реальности полководец ехал через перевал в хорошую погоду, верхом на муле, одетый в серый походный сюртук. На полотне же он предстает величественным героем на вздыбленном коне, летящим сквозь бурю. На возражение художника Наполеон ответил: «Никто не знает, похожи ли портреты великих людей. Достаточно того, что там живет их гений».',
+        pills: ['пародия', 'исторический сюжет', 'театр']
+      },
+      {
+        id: 'card3',
+        title: 'Цветущие ветки миндаля',
+        artist: 'Винсент ван Гог',
+        exposition: '',
+        image: '3.jpg',
+        position: '50% 50%',
+        description: 'Одна из самых светлых и жизнеутверждающих картин Винсента ван Гога, написанная им в 1890 году в Сен-Реми-де-Прованс. Ван Гог написал эту картину в подарок своему брату Тео, у которого родился сын, названный в честь художника — Винсентом Виллемом. Цветущий миндаль, который зацветает очень рано, символизирует начало новой жизни. Композиция картины необычна для европейской живописи того времени. ',
+        story: 'Отсутствие линии горизонта, кадрирование (будто мы смотрим на ветки снизу - вверх, лежа под деревом) и четкие темные контуры веток — это прямое влияние японской гравюры, которой восхищался Винсент. Картина построена на нежном сочетании бирюзового неба и бело-розовых лепестков. Интересно, что изначально цветы были более розовыми, но со временем красный пигмент выцвел, и они стали казаться почти белыми.',
+        pills: ['эстетика', 'природа', 'ирония']
+      },
+      {
+        id: 'museum-cat',
+        title: 'Сикстинская Мадонна',
+        artist: 'Рафаэль Санти',
+        exposition: '',
+        image: '4.jpg',
+        position: '50% 50%',
+        description: 'Одно из самых прославленных произведений мирового искусства, написанное Рафаэлем Санти в 1512–1513 годах по заказу папы Юлия II. знаменитые ангелочки-путти. Считается, что Рафаэль списал их с детей, которые заглядывали в его мастерскую, или с сыновей своих знакомых. Эти ангелы стали самостоятельным брендом и тиражируются на открытках и сувенирах по всему миру.',
+        story: 'Картина была предметом настоящего культа среди русских писателей и художников XIX века. Пушкин, Жуковский («Гений чистой красоты» — это о ней), Достоевский — все они боготворили этот образ. После Второй мировой войны картина была вывезена в СССР, хранилась в ГМИИ им. Пушкина, но в 1955 году была торжественно возвращена Германии.',
+        pills: ['высокое возраждение', 'ренесанс', 'духовность']
+      },
+      {
+        id: 'sleepy',
+        title: 'Поклонение золотому Тельцу',
+        artist: 'Филиппино Липпи',
+        exposition: '',
+        image: '5.jpg',
+        position: '50% 50%',
+        description: 'Одна из самых загадочных и динамичных работ Филиппино Липпи, написанная в период его творческой зрелости (около 1500 года). В отличие от традиционных изображений этого библейского сюжета, где в центре стоит статуя быка, у Липпи золотой телец парит в воздухе, объятый облаком дыма или мистическим сиянием.',
+        story: 'Это подчеркивает иллюзорность и дьявольскую природу идола.  Вокруг идола в экстазе кружатся люди. Липпи, будучи мастером линии, передает движение через развевающиеся ткани, сложные позы и экспрессивные жесты, что уже предвосхищает черты будущего маньеризма. Фон картины — дикий, скалистый пейзаж с фантастическими деревьями и мрачным небом. Это создает ощущение тревоги и хаоса, сопровождающего отступление народа от веры.',
+        pills: ['тишь', 'свет', 'созерцание']
+      },
+      {
+        id: 'duo',
+        title: 'Парнас',
+        artist: 'Андреа Мантенья ',
+        exposition: '',
+        image: '6.jpg',
+        position: '50% 50%',
+        description: 'Изысканная аллегорическая картина выдающегося мастера Раннего Возрождения Андреа Мантеньи, написанная в 1497 году. Картина была создана для знаменитого «студиоло» (личного кабинета) Изабеллы д’Эсте, маркизы Мантуанской, которая была одной из самых просвещенных женщин своей эпохи.',
+        story: 'Интересно, что эта работа была частью цикла, в который входили картины и других великих мастеров (например, Перуджино), но именно «Парнас» Мантеньи считается самым совершенным воплощением ренессансного гуманизма в этой серии.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'du',
+        title: 'Звездная ночь',
+        artist: 'Винсент ван Гог',
+        exposition: '',
+        image: '7.jpg',
+        position: '50% 50%',
+        description: 'Одна из самых знаменитых и эмоционально мощных картин Винсента ван Гога, написанная в июне 1889 года. Ван Гог написал её по памяти и воображению в лечебнице для душевнобольных Сен-Поль-де-Мозоль (Сен-Реми-де-Прованс). Это вид из его восточного окна за мгновение до рассвета, дополненный вымышленной голландской деревней. Картина наполнена невероятной энергией. Небо не статично: огромные вихри (турбулентные потоки) закручиваются в спирали, напоминающие далекие галактики.',
+        story: 'Использование коротких, пастозных мазков создает эффект вибрирующего, живого света. Высокое тёмное дерево на переднем плане — это кипарис. В то время он считался символом траура и смерти. Его пламевидная форма связывает землю и небо, жизнь и вечность. Контраст между глубоким тёмно-синим небом и ослепительно жёлтыми звёздами и луной создает мощное визуальное напряжение. Яркая белая «звезда» справа от кипариса — это на самом деле планета Венера, которая в то время была особенно заметна на рассвете.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'duy',
+        title: 'Венера перед зеркалом',
+        artist: 'Диего Веласкес',
+        exposition: '',
+        image: '8.jpg',
+        position: '50% 50%',
+        description: 'Единственное сохранившееся изображение обнаженной женской натуры кисти Диего Веласкеса. Для строгой католической Испании того времени, где инквизиция запрещала подобные сюжеты, эта картина была исключительным явлением. Веласкес изображает богиню со спины, что было новаторством.',
+        story: 'Зритель видит её лицо лишь в отражении зеркала, которое держит Амур. Лицо в зеркале кажется более взрослым и размытым, чем юное тело, что создает атмосферу таинственности. В отличие от пышных форм Рубенса или идеализированных Венер Тициана, героиня Веласкеса обладает стройной, естественной фигурой реальной женщины. Существует предположение, что моделью могла быть художница Фламиния Тривио, с которой у Веласкеса был роман в Риме. Картина построена на изысканном сочетании цветов: атласно-белой кожи, глубокого синего цвета драпировки и ярко-красного занавеса. Работа кисти Веласкеса здесь удивительно свободная и легкая.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'dut',
+        title: 'Постоянство памяти',
+        artist: 'Сальвадор Дали',
+        exposition: '',
+        image: '9.jpg',
+        position: '50% 50%',
+        description: 'Самая узнаваемая картина Сальвадора Дали, ставшая манифестом сюрреализма. Дали рассказывал, что идея «мягких часов» пришла к нему во время завтрака, когда он увидел, как от жары плавится сыр камамбер. Это натолкнуло его на мысли об относительности времени.',
+        story: '. Три циферблата словно плавятся, символизируя то, что время нелинейно и субъективно. Одни часы висят на ветке сухого дерева, вторые стекают с парапета, третьи лежат на странном объекте в центре. Расплывчатая фигура с ресницами в центре картины, на которой лежат часы, — это растянутый автопортрет самого Дали. Он часто изображал себя в таком виде, подчеркивая зыбкость человеческого «Я» во сне.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'dul',
+        title: 'Сотворение Адама',
+        artist: 'Микеланджело',
+        exposition: '',
+        image: '30.jpg',
+        position: '50% 50%',
+        description: 'Самый узнаваемый фрагмент росписи потолка Сикстинской капеллы, созданный Микеланджело Буонарроти около 1511 года. Фреска иллюстрирует библейский сюжет из Книги Бытия. Микеланджело отошел от традиционного изображения Бога, стоящего на земле, и представил его в стремительном полете. Кульминация всей композиции — почти соприкасающиеся руки.',
+        story: 'Бог-Отец полон энергии и жизни, в то время как рука Адама расслаблена. Жизненная искра передается не через физический контакт, а через узкий промежуток между пальцами, что создает невероятное напряжение.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'dup',
+        title: 'Вавилонская башня',
+        artist: 'Питер Брейгель Старший',
+        exposition: '',
+        image: '11.jpg',
+        position: '60% 40%',
+        description: 'Одна из самых знаменитых тем в творчестве великого фламандского мастера Питера Брейгеля Старшего. Художник обращался к этому сюжету трижды, но до нашего времени дошли только две монументальные работы. Брейгель посещал Рим, и прообразом башни для него послужил Колизей. Его башня сочетает в себе античные арки и типичное для Нидерландов XVI века строительство.',
+        story: 'Картина иллюстрирует библейский сюжет о попытке людей построить башню до небес. Брейгель подчеркивает бессмысленность этой затеи: если присмотреться, здание уже начало крениться, нижние ярусы еще не закончены, а верхние уже обживаются — хаос предвещает скорый крах. Художник с микроскопической точностью выписал тысячи крошечных фигурок рабочих, строительные краны того времени, лестницы и даже внутренние помещения. Это настоящий «город в здании».',
+       pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'dum',
+        title: 'Портрет четы Арнольфини',
+        artist: 'Ян ван Эйк',
+        exposition: '',
+        image: '12.jpg',
+        position: '50% 50%',
+        description: 'Одна из самых загадочных и детальных картин в истории мирового искусства, написанная фламандским мастером Яном ван Эйком в 1434 году. ',
+        story: 'Долгое время считалось, что на картине запечатлен момент свадьбы купца Джованни ди Николао Арнольфини и его жены. Однако современные исследователи спорят, не является ли это мемориальным портретом уже умершей супруги или юридическим актом передачи прав на имущество.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'dur',
+        title: 'Венера Урбинская',
+        artist: 'Тициан',
+        exposition: '',
+        image: '13.jpg',
+        position: '30% 70%',
+        description: 'Одна из самых чувственных и влиятельных картин эпохи Высокого Возрождения, написанная Тицианом в 1538 году.  Картина была написана для герцога Урбинского Гвидобальдо II делла Ровере.',
+        story: 'В отличие от более ранней «Спящей Венеры» Джорджоне, героиня Тициана не спит — она бодрствует и осознанно смотрит прямо на зрителя.  Несмотря на наготу, современные исследователи видят в картине аллегорию супружеской верности. Тициан мастерски передает контраст между мягкостью женского тела и жесткостью простыней, блеском шелка и глубиной интерьера. Его работа с цветом и кожей («тициановский» золотистый тон) стала эталоном для последующих поколений художников.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'dgh',
+        title: 'Богатыри',
+        artist: 'Виктор Васнецов',
+        exposition: '',
+        image: '14.jpg',
+        position: '50% 50%',
+        description: 'Монументальное полотно Виктора Васнецова, над которым он работал почти 20 лет (с 1881 по 1898 год). Это главный символ русского былинного эпоса в живописи. Богатыри стоят на границе леса и «чистого поля».',
+        story: 'Суровое небо, выжженная трава и маленькие елочки подчеркивают пустынность и тревожность пограничья, которое они охраняют. Интересно, что Васнецов возил огромное полотно за собой при каждом переезде, постоянно внося правки, пока наконец не счел его законченным в 1898 году.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+    {
+        id: 'duw',
+        title: 'Мальчик, выдувающий мыльные пузыри',
+        artist: 'Карел Дюжарден',
+        exposition: '',
+        image: '15.jpg',
+        position: '50% 50%',
+        description: 'Знаковое полотно голландского мастера Карела Дюжардена, которое официально называется «Аллегория бренности и краткости жизни» Эта работа — яркий пример жанра ванитас. На картине изображен светловолосый мальчик в бирюзовой тунике и розовом плаще. Он стоит на гигантской раковине-гребешке, которая плывет по бурному ночному морю. Мальчик балансирует на большом мыльном пузыре, что подчеркивает хрупкость и неустойчивость жизни',
+        story: 'Произведение визуализирует латинское изречение «Homo bulla est» — «Человек есть мыльный пузырь». Пузыри, которые пускает ребенок, красивы и переливаются всеми цветами радуги, но они лопаются в мгновение ока, символизируя кратковременность человеческого счастья и бытия.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'duq',
+        title: 'Дама с горностаем',
+        artist: 'Леонардо да Винчи',
+        exposition: '',
+        image: '16.jpg',
+        position: '50% 50%',
+        description: 'Один из четырех женских портретов великого Леонардо да Винчи, написанный около 1489–1490 годов. Это полотно считается первым в истории современного искусства портретом, передающим не только внешность, но и характер героини.',
+        story: 'На картине изображена Чечилия Галлерани, юная и образованная фаворитка миланского герцога Лодовико Сфорца. Леонардо изобразил Чечилию в повороте «три четверти», смотрящую в сторону, словно кто-то вошел в комнату. Это создало эффект живого движения и психологической глубины. Тщательная прорисовка лапы горностая и пальцев Чечилии демонстрирует глубокие познания художника в анатомии.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'duk',
+        title: 'Мона Лиза',
+        artist: 'Леонардо да Винчи',
+        exposition: '',
+        image: '17.jpg',
+        position: '50% 50%',
+        description: 'Самое известное произведение мировой живописи, созданное Леонардо да Винчи примерно в 1503–1506 годах. Считается, что на портрете изображена Лиза Герардини, жена флорентийского торговца шелком Франческо дель Джокондо. Однако существуют и другие версии (от автопортрета Леонардо до образа его матери).',
+        story: 'Леонардо использовал уникальный прием «растушевки» — сфумато. Мягкие переходы света и тени создают эффект дымки, из-за чего углы рта и глаз кажутся неуловимыми. Именно это придает улыбке Джоконды её знаменитую загадочность. Фигура образует устойчивую пирамиду. На заднем плане виден фантастический пейзаж с реками и мостами, написанный с использованием воздушной перспективы (дали кажутся голубоватыми и размытыми).',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'duz',
+        title: 'Похищение Психеи',
+        artist: 'Вильям-Адольф Бурго',
+        exposition: '',
+        image: '18.jpg',
+        position: '50% 50%',
+        description: 'Одна из самых возвышенных работ французского академиста Вильяма-Адольфа Бугро. Картина иллюстрирует миф об Амуре и Психее. Амур (Эрот) забирает свою возлюбленную Психею на небеса. В этой интерпретации Психея изображена с крыльями бабочки — символом человеческой души, которая обретает бессмертие через любовь.',
+        story: 'Это классический академизм. Бугро довел технику письма до совершенства: кожа героев кажется светящейся («фарфоровой»), а анатомия и драпировки безупречны. Критики часто называли его стиль «слишком идеальным».',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+       {
+        id: 'due',
+        title: 'Похищение дочерей Левкиппа',
+        artist: 'Питер Пауль Рубенс',
+        exposition: '',
+        image: '21.jpg',
+        position: '50% 50%',
+        description: 'Ярчайший образец стиля барокко, созданный фламандским живописцем Питером Паулем Рубенсом около 1617–1618 годов. Картина основана на античном мифе о братьях-близнецах Касторе и Поллуксе (Диоскурах), которые похитили Гилаейру и Фебу — дочерей царя Левкиппа, чтобы взять их в жены. Рубенс выстроил сложнейшую композицию в форме ромба или «вращающегося колеса».',
+        story: 'Переплетение тел, коней и амуров создает ощущение мощного кругового движения, где нет ни одной статичной линии. Художник мастерски противопоставляет нежную, почти светящуюся белизну женской кожи («жемчужный» тон Рубенса) мускулистым загорелым телам мужчин и грубой силе коней. Несмотря на драматизм сцены, в ней нет жестокости. Купидон (амур), прицепившийся к гриве коня слева, указывает на то, что движущей силой этого захвата является любовь. Золотистые и красные драпировки подчеркивают торжественность и триумф момента.Переплетение тел, коней и амуров создает ощущение мощного кругового движения, где нет ни одной статичной линии. Художник мастерски противопоставляет нежную, почти светящуюся белизну женской кожи («жемчужный» тон Рубенса) мускулистым загорелым телам мужчин и грубой силе коней. Несмотря на драматизм сцены, в ней нет жестокости. Купидон (амур), прицепившийся к гриве коня слева, указывает на то, что движущей силой этого захвата является любовь. Золотистые и красные драпировки подчеркивают торжественность и триумф момента.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'duv',
+        title: 'Весельчаки на масленице',
+        artist: 'Франс Халс',
+        exposition: '',
+        image: '19.jpg',
+        position: '50% 50%',
+        description: 'Одна из самых энергичных и живых работ великого мастера золотого века голландской живописи Франса Халса, написанная около 1616–1617 годов. Картина изображает празднование ',
+        story: 'Масленицы (Shrovetide) — время безудержного веселья перед Великим постом. В центре внимания — шумная компания в кабаке, объединенная духом праздника и изрядным количеством вина.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+      {
+        id: 'duc',
+        title: 'Крик',
+        artist: 'Эдвард Мунк',
+        exposition: '',
+        image: '20.jpg',
+        position: '50% 50%',
+        description: 'Самое знаковое произведение экспрессионизма, созданное норвежским художником Эдвардом Мунком. Картина передает чувство невыносимого экзистенциального ужаса.',
+        story: 'Мунк описывал момент вдохновения так: «Я шел по дороге с двумя друзьями... небо внезапно стало кроваво-красным... я почувствовал бесконечный крик, пронзающий природу».',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+       {
+        id: 'dng',
+        title: 'Игроки в карты',
+        artist: 'Поль Сезанн',
+        exposition: '',
+        image: '24.jpg',
+        position: '50% 50%',
+        description: 'Знаменитая серия из пяти картин французского художника-постимпрессиониста Поля Сезанна, созданная в период с 1890 по 1895 год. На полотнах изображены провансальские крестьяне, увлеченные игрой в карты.',
+        story: 'Моделями для художника служили рабочие из его поместья Жа-де-Буффан. В отличие от классических сцен азартных игр, где часто подчеркивается драматизм или порок, герои Сезанна спокойны и сосредоточены, а сама композиция напоминает натюрморт.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+       {
+        id: 'dom',
+        title: 'Портрет мадам Рекамье',
+        artist: 'Жак-Луи Давид',
+        exposition: '',
+        image: '22.jpg',
+        position: '50% 50%',
+        description: 'Одна из самых известных работ французского художника-неоклассициста Жака-Луи Давида, написанная в 1800 году. Жюльетта Рекамье была знаменитой светской львицей и хозяйкой влиятельного литературно-политического салона в Париже. На момент написания картины ей было 23 года. Картина считается эталоном стиля ампир',
+        story: 'Мадам Рекамье изображена в виде античной девы, босой, в простом белом платье-тунике, полулежащей на кушетке с изогнутыми спинками. Интерьер предельно лаконичен: в пустой комнате присутствуют лишь кушетка, скамеечка для ног и высокий светильник (канделябр) в античном стиле.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+       {
+        id: 'der',
+        title: 'Вакх',
+        artist: 'Караваджо',
+        exposition: '',
+        image: '23.jpg',
+        position: '50% 50%',
+        description: 'Одна из самых известных ранних работ великого итальянского мастера барокко Микеланджело Меризи да Караваджо, написанная около 1595–1597 годов. Античный бог виноделия изображен не как величественное божество, а как томный юноша, переодетый в греческие одежды. Считается, что моделью был друг и помощник художника Марио Миннити.',
+        story: 'Караваджо совершил революцию, добавив в классический сюжет приметы грубой реальности. У «бога» грязные ногти, покрасневшее от вина лицо и чувственный взгляд. Перед Вакхом стоит корзина с фруктами, многие из которых подпорчены (червивое яблоко, гнилой виноград). Это классический мотив vanitas — напоминание о быстротечности жизни и неизбежном увядании красоты.',
+        pills: ['ремикс', 'цитата', 'диалог']
+      },
+        
+    ];
+
+    const galleryGrid = document.getElementById('galleryGrid');
+    const searchInput = document.getElementById('searchInput');
+    const modal = document.getElementById('artModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalName = document.getElementById('modalName');
+    const modalMeta = document.getElementById('modalMeta');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalStory = document.getElementById('modalStory');
+    const modalPills = document.getElementById('modalPills');
+    const modalTitle = document.getElementById('modalTitle');
+
+    const headerSearchInput = document.getElementById('headerSearchInput');
+    const headerSearchResults = document.getElementById('headerSearchResults');
+    const gallerySection = document.getElementById('gallery');
+
+    function renderGallery(items) {
+      galleryGrid.innerHTML = items.map(item => `
+        <article
+          class="panel art-card reveal"
+          tabindex="0"
+          data-id="${item.id}"
+          aria-label="Открыть картину ${item.title}"
+          style="
+            background-image: url('${item.image}');
+            background-position: ${item.position || 'center'};
+          "
+        >
+          <div class="art-card-overlay"></div>
+
+          <div class="art-card-inner">
+            <div class="art-card-top">
+              <span class="art-card-label">${item.exposition}</span>
+              <span class="art-card-line" aria-hidden="true"></span>
+            </div>
+
+            <h3>${item.title}</h3>
+            <p class="art-card-subtitle">${item.artist}</p>
+            <p class="art-card-desc">${item.description}</p>
+
+            <button class="art-card-btn" type="button">Обзор</button>
+          </div>
+        </article>
+      `).join('');
+
+      observeReveals();
+      bindCards();
+    }
+
+    function openArtwork(id, pushHash = true) {
+      const art = artworks.find(a => a.id === id) || artworks[0];
+      if (!art) return;
+      modalImage.src = art.image;
+      modalImage.alt = art.title;
+      modalName.textContent = art.title;
+      modalTitle.textContent = art.title;
+      modalMeta.textContent = `${art.artist} • ${art.exposition}`;
+      modalDescription.textContent = art.description;
+      modalStory.textContent = art.story;
+      modalPills.innerHTML = art.pills.map(p => `<span class="pill">${p}</span>`).join('');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      if (pushHash) history.pushState({ art: id }, '', `#gallery/${id}`);
+    }
+
+    function closeArtwork(withHash = true) {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (withHash && location.hash.startsWith('#gallery/')) {
+        history.pushState({}, '', '#gallery');
+      }
+    }
+
+    function bindCards() {
+      document.querySelectorAll('.art-card').forEach(card => {
+        const id = card.getAttribute('data-id');
+
+        card.onclick = (e) => {
+          if (e.target.closest('.art-card-btn')) {
+            openArtwork(id);
+            return;
+          }
+          openArtwork(id);
+        };
+
+        card.onkeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openArtwork(id);
+          }
+        };
+      });
+    }
+
+    function filterGallery() {
+      const q = searchInput.value.trim().toLowerCase();
+      const filtered = artworks.filter(a =>
+        [a.title, a.artist, a.exposition, a.description].join(' ').toLowerCase().includes(q)
+      );
+      renderGallery(filtered);
+    }
+
+    function observeReveals() {
+      const els = document.querySelectorAll('.reveal:not(.observed)');
+      els.forEach(el => el.classList.add('observed'));
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.14 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    }
+
+    // initial gallery
+    renderGallery(artworks);
+
+    searchInput.addEventListener('input', filterGallery);
+    closeModal.addEventListener('click', () => closeArtwork());
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeArtwork();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeArtwork();
+    });
+
+    window.addEventListener('hashchange', () => {
+      const hash = location.hash.replace('#gallery/', '');
+      if (location.hash.startsWith('#gallery/')) {
+        openArtwork(hash, false);
+      } else if (location.hash === '#gallery') {
+        closeArtwork(false);
+      }
+    });
+
+    // Open artwork from deep link on load
+    if (location.hash.startsWith('#gallery/')) {
+      const id = location.hash.replace('#gallery/', '');
+      setTimeout(() => openArtwork(id, false), 150);
+    }
+
+    // reveal hero on load
+    observeReveals();
+
+    function openArtworkFromHeader(id) {
+      const target = document.getElementById('gallery');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      setTimeout(() => openArtwork(id), 350);
+    }
+
+    function renderHeaderSearchResults(query) {
+      const q = query.trim().toLowerCase();
+
+      if (!q) {
+        headerSearchResults.classList.remove('open');
+        headerSearchResults.innerHTML = '';
+        return;
+      }
+
+      const matches = artworks.filter(a =>
+        [a.title, a.artist, a.exposition, a.description]
+          .join(' ')
+          .toLowerCase()
+          .includes(q)
+      ).slice(0, 5);
+
+      if (!matches.length) {
+        headerSearchResults.innerHTML = `<div class="nav-search-empty">Ничего не найдено</div>`;
+        headerSearchResults.classList.add('open');
+        return;
+      }
+
+      headerSearchResults.innerHTML = matches.map(item => `
+        <button class="nav-search-result" type="button" data-id="${item.id}">
+          <strong>${item.title}</strong>
+          <span>${item.artist} • ${item.exposition}</span>
+        </button>
+      `).join('');
+
+      headerSearchResults.classList.add('open');
+
+      headerSearchResults.querySelectorAll('.nav-search-result').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          headerSearchInput.value = '';
+          headerSearchResults.classList.remove('open');
+          headerSearchResults.innerHTML = '';
+          openArtworkFromHeader(id);
+        });
+      });
+    }
+
+    headerSearchInput.addEventListener('input', (e) => {
+      renderHeaderSearchResults(e.target.value);
+    });
+
+    headerSearchInput.addEventListener('focus', () => {
+      renderHeaderSearchResults(headerSearchInput.value);
+    });
+
+    headerSearchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const first = headerSearchResults.querySelector('.nav-search-result');
+        if (first) {
+          e.preventDefault();
+          first.click();
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      const insideSearch = e.target.closest('#headerSearchWrap');
+      if (!insideSearch) {
+        headerSearchResults.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>
